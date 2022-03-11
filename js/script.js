@@ -3,6 +3,8 @@
   const articles = document.querySelectorAll('.post');
   let instruction = document.createElement('div');
   instruction.textContent = 'Please choose an article.';
+  instruction.style.opacity = '0';
+  instruction.style.animation = 'show-item 1s forwards';
   document.querySelector('section').appendChild(instruction);
 
   const displayArticle = function (articleIdentifier) {
@@ -18,7 +20,7 @@
     for (let article of articles) {
       article.classList.remove('active');
     }
-    instruction.textContent = 'Please choose an article.';
+    instruction.style.display = 'block';
   };
 
   const activateLink = function (evt) {
@@ -32,7 +34,7 @@
 
     const articleIdentifier = clickedLink.getAttribute('href');
 
-    instruction.textContent = '';
+    instruction.style.display = 'none';
 
     if (linkStatus) {
       clickedLink.classList.remove('active');
