@@ -11,7 +11,7 @@
     "init:htmlvalidate": "touch .htmlvalidate.json && echo \"{\\\"rules\\\": {\\\"style\\\": \\\"off\\\"}}\" > .htmlvalidate.json",
 
     "test": "npm-run-all test:*",
-    "test:html": "html-validate *.html",
+    "test:html": "html-validate --rule style:0  *.html",
 
     "build": "npm-run-all build:* && npm run test",
     "build:sass": "sass --style=compressed --no-source-map sass:css",
