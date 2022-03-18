@@ -1,6 +1,6 @@
 'use strict';
 {
-  const articles = document.querySelectorAll('.post');
+  let articles = document.querySelectorAll('.post');
   let instruction = document.createElement('div');
   instruction.textContent = 'Please choose an article.';
   instruction.style.opacity = '0';
@@ -48,7 +48,8 @@
     }
   };
 
-  const generateLinkList = function () {
+  const generateLinkList = function (articleFilter = '') {
+    const articles = document.querySelectorAll('.post' + articleFilter);
     let linkList = document.querySelector('.titles');
     linkList.innerHTML = '';
     for (let article of articles) {
@@ -63,24 +64,68 @@
     for (let link of links) {
       link.addEventListener('click', activateLink);
     }
+
+    checkCurrentArticle(articles);
+  };
+
+  const checkCurrentArticle = function (articles) {
+    const linkList = document.querySelectorAll('.titles a');
+    for (let article of articles) {
+      if (article.classList.contains('active')) {
+        const articleId = article.id;
+        for (let link of linkList) {
+          if (link.getAttribute('href') === '#' + articleId) {
+            console.log(link.getAttribute('href'));
+            link.classList.add('active');
+          }
+        }
+      }
+    }
+  };
+
+  const generateTags = function () {
+    for (let article of articles) {
+      const postTags = article.getAttribute('data-tags');
+      const tagList = article.querySelector('.list');
+      const tagsArray = postTags.split(' ');
+      for (let i = 0; i < tagsArray.length; i++) {
+        let newTag = '<li><a href="#tag-' + tagsArray[i] + '">' + tagsArray[i] + '</a></li> ';
+        tagList.insertAdjacentHTML('beforeend', newTag);
+      }
+    }
+  };
+
+  const tagClickHandler = function (evt) {
+    evt.preventDefault();
+    const clickedElement = this;
+    const elementHref = clickedElement.getAttribute('href');
+    const elementTag = elementHref.substring(5);
+    const activeLinks = document.querySelectorAll('a.active[href^="#tag-"]');
+    if (clickedElement.classList.contains('active')) {
+      removeActive(activeLinks);
+      generateLinkList();
+    } else {
+      removeActive(activeLinks);
+      const linksToDisplay = document.querySelectorAll('a[href="' + elementHref + '"]');
+      for (let linkToDisplay of linksToDisplay) {
+        linkToDisplay.classList.add('active');
+      }
+      generateLinkList('[data-tags~="' + elementTag + '"]');
+    }
+  };
+
+  const removeActive = function (activeLinks) {
+    for (let activeLink of activeLinks) {
+      activeLink.classList.remove('active');
+    }
   };
 
   generateLinkList();
+  generateTags();
+
+  const tagLinks = document.querySelectorAll('a[href^="#tag-"]');
+
+  for (let tagLink of tagLinks) {
+    tagLink.addEventListener('click', tagClickHandler);
+  }
 }
-//alternatywne rozwiazanie
-
-// const generateLinkList = function () {
-//   document.querySelector('.titles').innerHTML = '';
-//   for (let article of articles) {
-//     const articleIdentifier = article.id;
-//     const titleText = article.querySelector('.post-title').textContent;
-//     const link = document.createElement('li');
-//     link.innerHTML = '<a href="#' + articleIdentifier + '"><span>' + titleText + '</span></a>';
-//     document.querySelector('ul').appendChild(link);
-//   }
-//   const links = document.querySelectorAll('.titles a');
-
-//   for (let link of links) {
-//     link.addEventListener('click', activateLink);
-//   }
-// };
