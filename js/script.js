@@ -136,7 +136,6 @@
     const clickedLink = this;
     const authorHref = clickedLink.getAttribute('href');
     const authorDataTag = clickedLink.innerText;
-    console.log(clickedLink.textContent.length);
     const activeLinks = document.querySelectorAll('a.active[href^="#author-"]');
     if (clickedLink.classList.contains('active')) {
       removeActive(activeLinks);
@@ -146,7 +145,6 @@
       removeActive(activeLinks);
       removeActive(tagLinks);
       const linksToActivate = document.querySelectorAll('a[href="' + authorHref + '"]');
-      console.log('a[href="' + authorHref + '"]');
       for (let linkToActivate of linksToActivate) {
         linkToActivate.classList.add('active');
       }
