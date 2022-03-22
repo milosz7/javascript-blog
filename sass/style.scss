@@ -94,6 +94,12 @@ body {
   }
 }
 
+.tags {
+  li {
+    display: inline;
+  }
+}
+
 /* Authors */
 
 .authors {
@@ -133,5 +139,11 @@ body {
   display: flex;
   p {
     margin: 0 10px 0 0;
+  }
+}
+
+@for $i from 1 through 5 {
+  .tag-size-#{$i} {
+    font-size: calc(($i / 5) * 100% + 60%);
   }
 }
