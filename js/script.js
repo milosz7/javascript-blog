@@ -82,7 +82,7 @@
     }
   };
 
-  const generateTags = function () {
+  const generateTagLinks = function () {
     for (let article of articles) {
       const postTags = article.getAttribute('data-tags');
       const tagList = article.querySelector('.list');
@@ -121,6 +121,29 @@
     }
   };
 
+  const generateAuthorsList = function () {
+    const authorList = document.querySelector('.list.authors');
+    const authorCount = {};
+    const authorsSort = [];
+    for (let article of articles) {
+      const authorName = article.getAttribute('data-author');
+      authorCount[authorName] = (authorCount[authorName] || 0) + 1;
+    }
+    for (let author in authorCount) {
+      const authorTag = author.toLowerCase().split(' ').join('-');
+      const authorLink =
+        '<li><a href="#author-' +
+        authorTag +
+        '"><span class="author-name">' +
+        author +
+        '</span></a><span> (' +
+        authorCount[author] +
+        ')</span></li>';
+      authorsSort.push(authorLink);
+    }
+    authorList.innerHTML = authorsSort.sort().join(' ');
+  };
+
   const generateAuthors = function () {
     for (let article of articles) {
       const authorName = article.getAttribute('data-author');
@@ -152,9 +175,65 @@
     }
   };
 
+  const calculateTagsParams = function (tagCount) {
+    const tagsParamsArr = [];
+    for (let tag in tagCount) {
+      tagsParamsArr.push(tagCount[tag]);
+    }
+    const tagsMinMax = {};
+    tagsMinMax.min = Math.min(...tagsParamsArr);
+    tagsMinMax.max = Math.max(...tagsParamsArr);
+    return tagsMinMax;
+  };
+
+  const calculateTagClass = function (tagsMinMax, tagCount) {
+    const numberOfFontSizes = 5;
+    const countNormalized = tagCount - tagsMinMax.min;
+    const maxNormalized = tagsMinMax.max - tagsMinMax.min;
+    const classNumber = Math.floor((countNormalized / maxNormalized) * (numberOfFontSizes - 1) + 1);
+    return classNumber;
+  };
+
+  const generateTagList = function () {
+    let tagsArr = [];
+    for (let article of articles) {
+      const articleTags = article.getAttribute('data-tags').split(' ');
+      tagsArr.push.apply(tagsArr, articleTags);
+    }
+    const tagCount = {};
+    tagsArr.forEach((tag) => {
+      tagCount[tag] = (tagCount[tag] || 0) + 1;
+    });
+    const tagsUnique = tagsArr.reduce(function (uniqueTags, tagToCheck) {
+      if (uniqueTags.indexOf(tagToCheck) < 0) {
+        uniqueTags.push(tagToCheck);
+      }
+      uniqueTags.sort();
+      return uniqueTags;
+    }, []);
+
+    const tagsMinMax = calculateTagsParams(tagCount);
+    const tagClassPrefix = 'tag-size-';
+
+    tagsUnique.forEach((tag) => {
+      const tagList = document.querySelector('.list.tags');
+      const linkToInsert =
+        '<li><a href="#tag-' +
+        tag +
+        '" class="' +
+        tagClassPrefix +
+        calculateTagClass(tagsMinMax, tagCount[tag]) +
+        '">' +
+        tag +
+        '</a></li> ';
+      tagList.insertAdjacentHTML('beforeend', linkToInsert);
+    });
+  };
+  generateTagList();
   generateLinkList();
   generateAuthors();
-  generateTags();
+  generateAuthorsList();
+  generateTagLinks();
 
   const tagLinks = document.querySelectorAll('a[href^="#tag-"]');
 
