@@ -149,7 +149,8 @@
       authorsLinkData.authors.push({
         author: author,
         count: authorCount[author],
-        id: author.toLowerCase().replaceAll(' ', '-'),
+        // id: 'author-' + author.toLowerCase().split(' ').join('-'),
+        id: author.replace(author, author.toLowerCase().split(' ').join('-')),
       });
     }
 
