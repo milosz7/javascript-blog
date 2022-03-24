@@ -149,7 +149,8 @@
       authorsLinkData.authors.push({
         author: author,
         count: authorCount[author],
-        id: 'author-' + author.toLowerCase().split(' ').join('-'),
+        // id: 'author-' + author.toLowerCase().split(' ').join('-'),
+        id: author.replace(author, author.toLowerCase().split(' ').join('-')),
       });
     }
 
@@ -211,7 +212,7 @@
     let tagsArr = [];
     for (let article of articles) {
       const articleTags = article.getAttribute('data-tags').split(' ');
-      tagsArr.push.apply(tagsArr, articleTags);
+      tagsArr.push(...articleTags);
     }
     const tagCount = {};
     tagsArr.forEach((tag) => {
